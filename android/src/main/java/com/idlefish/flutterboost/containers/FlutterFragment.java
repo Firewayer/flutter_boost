@@ -227,6 +227,17 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     }
 
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            delegate.onPause();
+        } else {
+            delegate.onResume();
+        }
+
+    }
+
     // Delegate that runs all lifecycle and OS hook logic that is common between
     // FlutterActivity and NewFlutterFragment. See the FlutterActivityAndFragmentDelegate
     // implementation for details about why it exists.
@@ -259,13 +270,17 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public void onStart() {
         super.onStart();
-        delegate.onStart();
+        if (isHidden()){
+            delegate.onStart();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        delegate.onResume();
+        if (!isHidden()){
+            delegate.onResume();
+        }
     }
 
     // TODO(mattcarroll): determine why this can't be in onResume(). Comment reason, or move if possible.
@@ -277,7 +292,9 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public void onPause() {
         super.onPause();
-        delegate.onPause();
+        if (!isHidden()) {
+            delegate.onPause();
+        }
     }
 
     @Override
